@@ -61,6 +61,7 @@ Updates the displayed text.
 function DebugTextView.Update(self: DebugTextView): ()
     local TextLines = {}
     for _, Entry in self.DebugTextEntries do
+        if not Entry:IsAuthorized(Players.LocalPlayer) then continue end
         table.insert(TextLines, `{Entry.Name}: {Entry.Text}`)
     end
     self.DebugTextLabel.Text = table.concat(TextLines, "\n")
