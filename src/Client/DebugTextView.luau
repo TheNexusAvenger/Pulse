@@ -1,0 +1,96 @@
+--Displays debug text on the client.
+--!strict
+
+local Players = game:GetService("Players")
+
+local DebugTextEntry = require(script.Parent.Parent:WaitForChild("Common"):WaitForChild("DebugTextEntry"))
+
+local DebugTextView = {}
+DebugTextView.__index = DebugTextView
+
+export type DebugTextView = {
+    DebugScreenGui: ScreenGui,
+    DebugTextLabel: TextLabel,
+    DebugTextEntries: {DebugTextEntry.DebugTextEntry},
+} & typeof(setmetatable({}, DebugTextView))
+
+
+
+--[[
+Creates a debug text view.
+--]]
+function DebugTextView.new(Parent: Instance?): DebugTextView
+    --Create the text display.
+    local DebugScreenGui = Instance.new("ScreenGui")
+    DebugScreenGui.DisplayOrder = 1000
+    DebugScreenGui.Name = "DebugText"
+    DebugScreenGui.ResetOnSpawn = false
+    DebugScreenGui.Enabled = false
+    task.spawn(function()
+        DebugScreenGui.Parent = Parent or Players.LocalPlayer:WaitForChild("PlayerGui")
+    end)
+
+    local DebugTextLabel = Instance.new("TextLabel")
+    DebugTextLabel.AnchorPoint = Vector2.new(0, 1)
+    DebugTextLabel.BackgroundTransparency = 1
+    DebugTextLabel.Position = UDim2.new(0, 4, 1, -4)
+    DebugTextLabel.Font = Enum.Font.SourceSans
+    DebugTextLabel.Text = ""
+    DebugTextLabel.TextSize = 18
+    DebugTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    DebugTextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    DebugTextLabel.TextStrokeTransparency = 0
+    DebugTextLabel.TextXAlignment = Enum.TextXAlignment.Left
+    DebugTextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+    DebugTextLabel.Parent = DebugScreenGui
+
+    --Create and return the object.
+    return setmetatable({
+        DebugScreenGui = DebugScreenGui,
+        DebugTextLabel = DebugTextLabel,
+        DebugTextEntries = {},
+    }, DebugTextView) :: DebugTextView
+end
+
+--[[
+Updates the displayed text.
+--]]
+function DebugTextView.Update(self: DebugTextView): ()
+    local TextLines = {}
+    for _, Entry in self.DebugTextEntries do
+        table.insert(TextLines, `{Entry.Name}: {Entry.Text}`)
+    end
+    self.DebugTextLabel.Text = table.concat(TextLines, "\n")
+end
+
+--[[
+Adds a debug text entry.
+--]]
+function DebugTextView.AddEntry(self: DebugTextView, Entry: DebugTextEntry.DebugTextEntry): ()
+    --Store the entry.
+    table.insert(self.DebugTextEntries, Entry)
+    table.sort(self.DebugTextEntries, function(a, b)
+        return a.SortOrder < b.SortOrder
+    end)
+
+    --Update the text.
+    self:Update()
+    Entry.TextChanged:Connect(function()
+        self:Update()
+    end)
+end
+
+--[[
+Destroys the debug text view.
+--]]
+function DebugTextView.Destroy(self: DebugTextView): ()
+    self.DebugScreenGui:Destroy()
+    for _, Entry in self.DebugTextEntries do
+        Entry:Destroy()
+    end
+    self.DebugTextEntries = {}
+end
+
+
+
+return DebugTextView
