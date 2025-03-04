@@ -2,6 +2,7 @@
 --!strict
 
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 local DebugTextEntry = require(script.Parent.Parent:WaitForChild("Common"):WaitForChild("DebugTextEntry"))
 
@@ -12,6 +13,7 @@ export type DebugTextView = {
     DebugScreenGui: ScreenGui,
     DebugTextLabel: TextLabel,
     DebugTextEntries: {DebugTextEntry.DebugTextEntry},
+    EventConnections: {RBXScriptConnection},
 } & typeof(setmetatable({}, DebugTextView))
 
 
@@ -36,7 +38,7 @@ function DebugTextView.new(Parent: Instance?): DebugTextView
     DebugTextLabel.Position = UDim2.new(0, 4, 1, -4)
     DebugTextLabel.Font = Enum.Font.SourceSans
     DebugTextLabel.Text = ""
-    DebugTextLabel.TextSize = 18
+    DebugTextLabel.TextSize = 24
     DebugTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     DebugTextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
     DebugTextLabel.TextStrokeTransparency = 0
@@ -49,6 +51,7 @@ function DebugTextView.new(Parent: Instance?): DebugTextView
         DebugScreenGui = DebugScreenGui,
         DebugTextLabel = DebugTextLabel,
         DebugTextEntries = {},
+        EventConnections = {},
     }, DebugTextView) :: DebugTextView
 end
 
@@ -81,6 +84,19 @@ function DebugTextView.AddEntry(self: DebugTextView, Entry: DebugTextEntry.Debug
 end
 
 --[[
+Binds a key to toggling the debug view.
+This can be called multiple times with different inputs.
+--]]
+function DebugTextView.BindToggleKey(self: DebugTextView, Key: Enum.KeyCode): DebugTextView
+    table.insert(self.EventConnections, UserInputService.InputBegan:Connect(function(Input, Processed)
+        if Processed then return end
+        if Input.KeyCode ~= Key then return end
+        self.DebugScreenGui.Enabled = not self.DebugScreenGui.Enabled
+    end))
+    return self
+end
+
+--[[
 Destroys the debug text view.
 --]]
 function DebugTextView.Destroy(self: DebugTextView): ()
@@ -89,6 +105,10 @@ function DebugTextView.Destroy(self: DebugTextView): ()
         Entry:Destroy()
     end
     self.DebugTextEntries = {}
+    for _, EventConnection in self.EventConnections do
+        EventConnection:Disconnect()
+    end
+    self.EventConnections = {}
 end
 
 
