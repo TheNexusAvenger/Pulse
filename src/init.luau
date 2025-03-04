@@ -6,9 +6,11 @@ local RunService = game:GetService("RunService")
 local DebugTextView = require(script:WaitForChild("Client"):WaitForChild("DebugTextView"))
 local DebugClientState = require(script:WaitForChild("Client"))
 local DebugTextEntry = require(script:WaitForChild("Common"):WaitForChild("DebugTextEntry"))
+local DebugServerState = require(script:WaitForChild("Server"))
 
 local Pulse = {
     DebugClientState = nil :: DebugClientState.DebugClientState?,
+    DebugServerState = nil :: DebugServerState.DebugServerState?,
 }
 Pulse.__index = Pulse
 
@@ -38,7 +40,24 @@ function Pulse.AddEntry(self: Pulse, SortOrder: number, Name: string): DebugText
     if self.DebugClientState then
         self.DebugClientState:AddEntry(Entry)
     end
+    if self.DebugServerState then
+        self.DebugServerState:AddEntry(Entry)
+    end
     return Entry
+end
+
+--[[
+Enables debug text authorization.
+Must be called on the server.
+--]]
+function Pulse.EnableAuthorization(self: Pulse, IsAuthorized: (Player) -> (boolean)): ()
+    --Throw an error if it was not called on the server.
+    if not self.DebugServerState then
+        error("Pulse::EnableAuthorization must be called on the server.")
+    end
+
+    --Enable authorization.
+    self.DebugServerState:EnableAuthorization(IsAuthorized)
 end
 
 
@@ -46,6 +65,9 @@ end
 --Create the state.
 if RunService:IsClient() then
     Pulse.DebugClientState = DebugClientState.new()
+end
+if RunService:IsServer() then
+    Pulse.DebugServerState = DebugServerState.new()
 end
 
 
