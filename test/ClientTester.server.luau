@@ -26,4 +26,4 @@ end)
 --Add garbage collection.
 Pulse:AddGarbageCollectionKeybinds(Enum.KeyCode.F6, Enum.KeyCode.F8)
 Pulse:AddEntry(1000) --No name, no text.
-Pulse:AddEntry(1001, "Force client garbage collection"):SetText("Client - F6, Server - F8")
+Pulse:AddEntry(1001, "Force garbage collection"):SetText("Client - F6, Server - F8")
