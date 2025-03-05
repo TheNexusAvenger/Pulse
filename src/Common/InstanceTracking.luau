@@ -219,6 +219,16 @@ function InstanceTracking.BindDebugTextEntry(self: InstanceTracking, Entry: Debu
 end
 
 --[[
+Attempts to force garbage collection.
+--]]
+function InstanceTracking.AttemptGarbageCollection(self: InstanceTracking): ()
+    local Table = {}
+    for _ = 1, 50000 do
+        table.insert(Table, Instance.new("Part"))
+    end
+end
+
+--[[
 Destroys the instance tracking.
 --]]
 function InstanceTracking.Destroy(self: InstanceTracking): ()
