@@ -37,7 +37,7 @@ end
 --[[
 Adds a debug text entry.
 --]]
-function Pulse.AddEntry(self: Pulse, SortOrder: number, Name: string): DebugTextEntry.DebugTextEntry
+function Pulse.AddEntry(self: Pulse, SortOrder: number, Name: string?): DebugTextEntry.DebugTextEntry
     local Entry = DebugTextEntry.new(SortOrder, Name)
     if self.DebugClientState then
         self.DebugClientState:AddEntry(Entry)

@@ -63,7 +63,11 @@ function DebugTextView.Update(self: DebugTextView): ()
     local TextLines = {}
     for _, Entry in self.DebugTextEntries do
         if not Entry:IsAuthorized(Players.LocalPlayer) then continue end
-        table.insert(TextLines, `{Entry.Name}: {Entry.Text}`)
+        if Entry.Name == "" then
+            table.insert(TextLines, Entry.Text)
+        else
+            table.insert(TextLines, `{Entry.Name}: {Entry.Text}`)
+        end
     end
     self.DebugTextLabel.Text = table.concat(TextLines, "\n")
 end

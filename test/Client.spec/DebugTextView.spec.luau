@@ -24,6 +24,8 @@ return function()
             expect(TestDebugTextView.DebugTextLabel.Text).to.equal("TestName1: TestValue1")
             TestDebugTextView:AddEntry(DebugTextEntry.new(4, "TestName2"):SetText("TestValue2"))
             expect(TestDebugTextView.DebugTextLabel.Text).to.equal("TestName2: TestValue2\nTestName1: TestValue1")
+            TestDebugTextView:AddEntry(DebugTextEntry.new(6):SetText("TestValue3"))
+            expect(TestDebugTextView.DebugTextLabel.Text).to.equal("TestName2: TestValue2\nTestName1: TestValue1\nTestValue3")
         end)
 
         it("should update text entries.", function()

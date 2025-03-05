@@ -28,12 +28,12 @@ export type DebugTextEntry = {
 --[[
 Creates a debug text entry.
 --]]
-function DebugTextEntry.new(SortOrder: number, Name: string): DebugTextEntry
+function DebugTextEntry.new(SortOrder: number, Name: string?): DebugTextEntry
     local TextChangedEvent = Instance.new("BindableEvent")
     return setmetatable({
         Id = HttpService:GenerateGUID(false),
         SortOrder = SortOrder,
-        Name = Name,
+        Name = Name or "",
         Text = "",
         AuthorizationRequired = false,
         TextChanged = TextChangedEvent.Event :: RBXScriptSignal,
