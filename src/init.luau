@@ -6,11 +6,13 @@ local RunService = game:GetService("RunService")
 local DebugTextView = require(script:WaitForChild("Client"):WaitForChild("DebugTextView"))
 local DebugClientState = require(script:WaitForChild("Client"))
 local DebugTextEntry = require(script:WaitForChild("Common"):WaitForChild("DebugTextEntry"))
+local InstanceTracking = require(script:WaitForChild("Common"):WaitForChild("InstanceTracking"))
 local DebugServerState = require(script:WaitForChild("Server"))
 
 local Pulse = {
     DebugClientState = nil :: DebugClientState.DebugClientState?,
     DebugServerState = nil :: DebugServerState.DebugServerState?,
+    InstanceTracking = InstanceTracking.new(),
 }
 Pulse.__index = Pulse
 
@@ -58,6 +60,16 @@ function Pulse.EnableAuthorization(self: Pulse, IsAuthorized: (Player) -> (boole
 
     --Enable authorization.
     self.DebugServerState:EnableAuthorization(IsAuthorized)
+end
+
+--[[
+Adds a debug text entry for instance tracking.
+Calling EnableAuthorization on the server will be required.
+--]]
+function Pulse.AddInstanceTracking(self: Pulse, SortOrder: number): ()
+    local Name = (RunService:IsClient() and "Client instances" or "Server instances")
+    local Entry = self:AddEntry(SortOrder, Name):RequireAuthorization()
+    self.InstanceTracking:BindDebugTextEntry(Entry)
 end
 
 

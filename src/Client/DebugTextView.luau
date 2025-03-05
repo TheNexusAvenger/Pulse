@@ -39,6 +39,7 @@ function DebugTextView.new(Parent: Instance?): DebugTextView
     DebugTextLabel.Font = Enum.Font.SourceSans
     DebugTextLabel.Text = ""
     DebugTextLabel.TextSize = 24
+    DebugTextLabel.RichText = true
     DebugTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     DebugTextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
     DebugTextLabel.TextStrokeTransparency = 0

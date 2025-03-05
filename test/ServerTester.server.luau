@@ -12,6 +12,10 @@ Pulse:EnableAuthorization(function(Player)
     return game.JobId == "" or Player.UserId == game.CreatorId
 end)
 
+--Add instance tracking text.
+Pulse:AddInstanceTracking(11)
+Pulse.InstanceTracking:AutoTrackPlayers()
+
 --Add sample debug text.
 local TimeEntry = Pulse:AddEntry(2, "Server Session Time")
 task.spawn(function()

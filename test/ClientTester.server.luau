@@ -10,6 +10,10 @@ local Pulse = require(ReplicatedStorage:WaitForChild("Pulse"))
 Pulse:AddTextView()
     :BindToggleKey(Enum.KeyCode.F4)
 
+--Add instance tracking text.
+Pulse:AddInstanceTracking(10)
+Pulse.InstanceTracking:AutoTrackPlayers()
+
 --Add sample debug text.
 local Entry = Pulse:AddEntry(1, "Client Session Time")
 task.spawn(function()
