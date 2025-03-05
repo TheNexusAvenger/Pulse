@@ -15,6 +15,8 @@ end)
 --Add instance tracking text.
 Pulse:AddInstanceTracking(11)
 Pulse.InstanceTracking:AutoTrackPlayers()
+Pulse.InstanceTracking:AutoTrackByTag("TestTag1", "TestTag1")
+Pulse.InstanceTracking:AutoTrackByTag("TestTag2", "TestTag2")
 
 --Add sample debug text.
 local TimeEntry = Pulse:AddEntry(2, "Server Session Time")
@@ -31,3 +33,23 @@ Players.PlayerAdded:Connect(function()
     TotalPlayers += 1
     PlayersEntry:SetText(tostring(TotalPlayers))
 end)
+
+--Add and clear instances to simulate a memory leak.
+local StoredInstances = {}
+while true do
+    local Folder = Instance.new("Folder")
+    Folder:AddTag("TestTag1")
+    Folder.Parent = ReplicatedStorage
+    if math.random() > 0.5 then
+        Folder:AddTag("TestTag2")
+        table.insert(StoredInstances, Folder)
+    end
+    task.wait(0.5)
+
+    if math.random() > 0.5 then
+        Folder.Parent = Instance.new("Folder")
+    else
+        Folder:Destroy()
+    end
+    task.wait(0.5)
+end
