@@ -66,7 +66,7 @@ function DebugTextView.Update(self: DebugTextView): ()
         if Entry.Name == "" then
             table.insert(TextLines, Entry.Text)
         else
-            table.insert(TextLines, `{Entry.Name}: {Entry.Text}`)
+            table.insert(TextLines, `<font color=\"rgb(220,220,220)\">{Entry.Name}:</font> {Entry.Text}`)
         end
     end
     self.DebugTextLabel.Text = table.concat(TextLines, "\n")
