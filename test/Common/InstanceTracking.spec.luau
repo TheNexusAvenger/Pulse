@@ -245,7 +245,7 @@ return function()
             TestInstanceTracking:Track("Parts", TestPart3)
             TestInstanceTracking:Track("Parts", {})
 
-            expect(TestInstanceTracking:FormatSummary()).to.equal("Parts: 4 (2<font color=\"rgb(200,150,0)\">N</font>, 1<font color=\"rgb(200,0,0)\">U</font>, 6T)")
+            expect(TestInstanceTracking:FormatSummary()).to.equal("Parts: 4 (2<font color=\"rgb(255,150,0)\">N</font>, 1<font color=\"rgb(255,0,0)\">U</font>, 6T)")
         end)
 
         it("should format a summary with the same nil and unparented instances.", function()
@@ -262,7 +262,7 @@ return function()
             TestInstanceTracking:Track("Parts", TestPart3)
             TestInstanceTracking:Track("Parts", {})
 
-            expect(TestInstanceTracking:FormatSummary()).to.equal("Parts: 4 (2<font color=\"rgb(200,0,0)\">U</font>, 6T)")
+            expect(TestInstanceTracking:FormatSummary()).to.equal("Parts: 4 (2<font color=\"rgb(255,0,0)\">U</font>, 6T)")
         end)
 
         it("should bind with debug text.", function()
@@ -283,7 +283,7 @@ return function()
             TestInstanceTracking:BindDebugTextEntry(Entry)
 
             task.wait()
-            expect(Entry.Text).to.equal("Parts: 4 (2<font color=\"rgb(200,150,0)\">N</font>, 1<font color=\"rgb(200,0,0)\">U</font>, 6T)")
+            expect(Entry.Text).to.equal("Parts: 4 (2<font color=\"rgb(255,150,0)\">N</font>, 1<font color=\"rgb(255,0,0)\">U</font>, 6T)")
         end)
     end)
 end

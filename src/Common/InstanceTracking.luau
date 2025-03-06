@@ -256,10 +256,10 @@ function InstanceTracking.FormatSummary(self: InstanceTracking): string
         local CurrentInstances, NotUnderGameInstances, NilParentInstances, TotalInstances = GroupSummary.CurrentInstances, GroupSummary.NotUnderGameInstances, GroupSummary.NilParentInstances, GroupSummary.TotalInstances
         local SummaryParts = {}
         if NotUnderGameInstances > 0 and NilParentInstances ~= NotUnderGameInstances then
-            table.insert(SummaryParts, `{NotUnderGameInstances}<font color="rgb(200,150,0)">N</font>`)
+            table.insert(SummaryParts, `{NotUnderGameInstances}<font color="rgb(255,150,0)">N</font>`)
         end
         if NilParentInstances > 0 then
-            table.insert(SummaryParts, `{NilParentInstances}<font color="rgb(200,0,0)">U</font>`)
+            table.insert(SummaryParts, `{NilParentInstances}<font color="rgb(255,0,0)">U</font>`)
         end
         table.insert(SummaryParts, `{TotalInstances}T`)
         table.insert(InstanceSummaries, `{GroupName}: {CurrentInstances} ({table.concat(SummaryParts, ", ")})`)

@@ -1,7 +1,7 @@
 --Displays debug text on the client.
 --!strict
 
-local MAXIMUM_BACKGROUND_TRANSPARENCY = 0.75
+local MAXIMUM_BACKGROUND_TRANSPARENCY = 0.5
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
