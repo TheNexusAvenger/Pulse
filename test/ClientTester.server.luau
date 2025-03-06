@@ -27,3 +27,8 @@ end)
 Pulse:AddGarbageCollectionKeybinds(Enum.KeyCode.F6, Enum.KeyCode.F8)
 Pulse:AddEntry(1000) --No name, no text.
 Pulse:AddEntry(1001, "Force garbage collection"):SetText("Client - F6, Server - F8")
+
+--Add Nexus Admin integration.
+--This can be called without Nexus Admin loading.
+local NexusAdminIntegration = require(ReplicatedStorage:WaitForChild("Pulse"):WaitForChild("Admin"):WaitForChild("NexusAdmin"))
+NexusAdminIntegration:AddCommands(0)

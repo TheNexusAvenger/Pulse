@@ -15,7 +15,7 @@ export type InstanceTrackingEntry = {
     TagsTotals: {[string]: number},
     Instances: {[any]: {[string]: boolean}},
 }
-export type InstaanceTrackingSummaryEntry = {
+export type InstanceTrackingSummaryEntry = {
     CurrentInstances: number,
     NotUnderGameInstances: number,
     NilParentInstances: number,
@@ -188,7 +188,7 @@ end
 --[[
 Returns a summary of the tracked instances.
 --]]
-function InstanceTracking.GetSummary(self: InstanceTracking, FormatMode: "ALL" | "NO_TAGS"): {[string]: InstaanceTrackingSummaryEntry}
+function InstanceTracking.GetSummary(self: InstanceTracking, FormatMode: "ALL" | "NO_TAGS"): {[string]: InstanceTrackingSummaryEntry}
     local Summary = {}
     local AddTags = (FormatMode == "ALL")
     for GroupName, InstanceGroup in self.TrackedInstances do
