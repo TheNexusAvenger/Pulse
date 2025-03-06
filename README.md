@@ -7,17 +7,17 @@ with information about stored instances to identify potential memory leaks.
 ## Debug Text Setup
 ### Debug View (Client-only)
 In order to enable the debug text view, a call to `Pulse::AddTextView` and
-at least 1 call to `Pulse::BindToggleKey` are required. Multiple keys can
+at least 1 call to `DebugTextView::BindToggleKey` are required. Multiple keys can
 be bound to toggling the view. `F4` is the current recommended default.
 
 ```luau
 local Pulse = require(game:GetService("ReplicatedStorage"):WaitForChild("Pulse"))
 
-Pulse:AddTextView()
-Pulse:BindToggleKey(Enum.KeyCode.F4)
+local TextView = Pulse:AddTextView()
+TextView:BindToggleKey(Enum.KeyCode.F4)
 ```
 
-These can be chained together in a single call if desired.
+These can be chained together in a single call.
 ```luau
 local Pulse = require(game:GetService("ReplicatedStorage"):WaitForChild("Pulse"))
 
