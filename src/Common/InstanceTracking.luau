@@ -15,6 +15,20 @@ export type InstanceTrackingEntry = {
     TagsTotals: {[string]: number},
     Instances: {[any]: {[string]: boolean}},
 }
+export type InstaanceTrackingSummaryEntry = {
+    CurrentInstances: number,
+    NotUnderGameInstances: number,
+    NilParentInstances: number,
+    TotalInstances: number,
+    Tags: {
+        [string]: {
+            CurrentInstances: number,
+            NotUnderGameInstances: number,
+            NilParentInstances: number,
+            TotalInstances: number,
+        }
+    },
+}
 export type InstanceTracking = {
     Active: boolean,
     TextRefreshDelay: number,
@@ -172,24 +186,74 @@ function InstanceTracking.AutoTagNames(self: InstanceTracking, Group: string): (
 end
 
 --[[
+Returns a summary of the tracked instances.
+--]]
+function InstanceTracking.GetSummary(self: InstanceTracking, FormatMode: "ALL" | "NO_TAGS"): {[string]: InstaanceTrackingSummaryEntry}
+    local Summary = {}
+    local AddTags = (FormatMode == "ALL")
+    for GroupName, InstanceGroup in self.TrackedInstances do
+        --Create the empty summary.
+        local GroupSummary = {
+            CurrentInstances = 0,
+            NotUnderGameInstances = 0,
+            NilParentInstances = 0,
+            TotalInstances = InstanceGroup.TotalEntries,
+            Tags = {},
+        }
+        if AddTags then
+            for Tag, TagTotal in InstanceGroup.TagsTotals do
+                GroupSummary.Tags[Tag] = {
+                    CurrentInstances = 0,
+                    NotUnderGameInstances = 0,
+                    NilParentInstances = 0,
+                    TotalInstances = TagTotal,
+                }
+            end
+        end
+        Summary[GroupName] = GroupSummary
+
+        --Add the instances.
+        for Ins, InsTags in InstanceGroup.Instances do
+            --Add the total.
+            local IsInstance = typeof(Ins) == "Instance"
+            local NotUnderGame = IsInstance and not Ins:IsDescendantOf(game)
+            local NilParent = IsInstance and (Ins.Parent == nil)
+            GroupSummary.CurrentInstances += 1
+            if NotUnderGame then
+                GroupSummary.NotUnderGameInstances += 1
+            end
+            if NilParent then
+                GroupSummary.NilParentInstances += 1
+            end
+            
+            --Add the tags.
+            if AddTags then
+                for Tag, _ in InsTags do
+                    local TagTotal = GroupSummary.Tags[Tag]
+                    TagTotal.CurrentInstances += 1
+                    if NotUnderGame then
+                        TagTotal.NotUnderGameInstances += 1
+                    end
+                    if NilParent then
+                        TagTotal.NilParentInstances += 1
+                    end
+                end
+            end
+        end
+    end
+    return Summary
+end
+
+--[[
 Formats the summary of the instances.
 --]]
 function InstanceTracking.FormatSummary(self: InstanceTracking): string
     --Build the summary.
+    local Summary = self:GetSummary("NO_TAGS")
     local InstanceSummaries = {}
-    for GroupName, InstanceGroup in self.TrackedInstances do
-        --Get the totals to display.
-        local TotalInstances, NotUnderGameInstances, NilParentInstances = 0, 0, 0
-        for Ins, _ in InstanceGroup.Instances do
-            TotalInstances += 1
-            if typeof(Ins) ~= "Instance" then continue end
-            if Ins:IsDescendantOf(game) then continue end
-            NotUnderGameInstances += 1
-            if Ins.Parent then continue end
-            NilParentInstances += 1
-        end
-
+    for GroupName, GroupSummary in Summary do
         --Build the string.
+        local CurrentInstances, NotUnderGameInstances, NilParentInstances, TotalInstances = GroupSummary.CurrentInstances, GroupSummary.NotUnderGameInstances, GroupSummary.NilParentInstances, GroupSummary.TotalInstances
         local SummaryParts = {}
         if NotUnderGameInstances > 0 and NilParentInstances ~= NotUnderGameInstances then
             table.insert(SummaryParts, `{NotUnderGameInstances}<font color="rgb(200,150,0)">N</font>`)
@@ -197,8 +261,8 @@ function InstanceTracking.FormatSummary(self: InstanceTracking): string
         if NilParentInstances > 0 then
             table.insert(SummaryParts, `{NilParentInstances}<font color="rgb(200,0,0)">U</font>`)
         end
-        table.insert(SummaryParts, `{InstanceGroup.TotalEntries}T`)
-        table.insert(InstanceSummaries, `{GroupName}: {TotalInstances} ({table.concat(SummaryParts, ", ")})`)
+        table.insert(SummaryParts, `{TotalInstances}T`)
+        table.insert(InstanceSummaries, `{GroupName}: {CurrentInstances} ({table.concat(SummaryParts, ", ")})`)
     end
 
     --Sort and concat the entries.

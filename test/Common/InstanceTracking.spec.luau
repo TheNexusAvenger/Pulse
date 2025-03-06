@@ -181,6 +181,55 @@ return function()
             expect(next(Group.Instances[TestData]) :: any).to.equal(nil)
         end)
 
+        it("should create summaries without tags.", function()
+            TestInstanceTracking:GetGroup("Parts").TotalEntries += 2
+
+            local TestPart1 = Instance.new("Part")
+            TestPart1.Parent = ReplicatedStorage
+            Debris:AddItem(TestPart1, 0.1)
+            local TestPart2 = Instance.new("Part")
+            local TestPart3 = Instance.new("Part")
+            TestPart3.Parent = TestPart2
+
+            TestInstanceTracking:Tag("Parts", TestPart1, "TestTag")
+            TestInstanceTracking:Tag("Parts", TestPart2, "TestTag")
+            TestInstanceTracking:Tag("Parts", TestPart3, "TestTag")
+            TestInstanceTracking:Tag("Parts", {}, "TestTag")
+        
+            local Summary = TestInstanceTracking:GetSummary("NO_TAGS")
+            expect(Summary["Parts"].CurrentInstances).to.equal(4)
+            expect(Summary["Parts"].NotUnderGameInstances).to.equal(2)
+            expect(Summary["Parts"].NilParentInstances).to.equal(1)
+            expect(Summary["Parts"].TotalInstances).to.equal(6)
+            expect(Summary["Parts"].Tags["TestTag"]).to.equal(nil)
+        end)
+
+        it("should create summaries with tags.", function()
+            TestInstanceTracking:GetGroup("Parts").TotalEntries += 2
+
+            local TestPart1 = Instance.new("Part")
+            TestPart1.Parent = ReplicatedStorage
+            Debris:AddItem(TestPart1, 0.1)
+            local TestPart2 = Instance.new("Part")
+            local TestPart3 = Instance.new("Part")
+            TestPart3.Parent = TestPart2
+
+            TestInstanceTracking:Tag("Parts", TestPart1, "TestTag")
+            TestInstanceTracking:Tag("Parts", TestPart2, "TestTag")
+            TestInstanceTracking:Tag("Parts", TestPart3, "TestTag")
+            TestInstanceTracking:Tag("Parts", {}, "TestTag")
+        
+            local Summary = TestInstanceTracking:GetSummary("ALL")
+            expect(Summary["Parts"].CurrentInstances).to.equal(4)
+            expect(Summary["Parts"].NotUnderGameInstances).to.equal(2)
+            expect(Summary["Parts"].NilParentInstances).to.equal(1)
+            expect(Summary["Parts"].TotalInstances).to.equal(6)
+            expect(Summary["Parts"].Tags["TestTag"].CurrentInstances).to.equal(4)
+            expect(Summary["Parts"].Tags["TestTag"].NotUnderGameInstances).to.equal(2)
+            expect(Summary["Parts"].Tags["TestTag"].NilParentInstances).to.equal(1)
+            expect(Summary["Parts"].Tags["TestTag"].TotalInstances).to.equal(4)
+        end)
+
         it("should format a summary.", function()
             TestInstanceTracking:GetGroup("Parts").TotalEntries += 2
 
