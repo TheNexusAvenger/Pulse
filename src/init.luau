@@ -1,6 +1,7 @@
 --Main module for Pulse.
 --!strict
 
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -103,6 +104,7 @@ function Pulse.AddGarbageCollectionKeybinds(self: Pulse, ClientKey: Enum.KeyCode
         UserInputService.InputBegan:Connect(function(Input, Processed)
             if Processed then return end
             if Input.KeyCode ~= ClientKey then return end
+            if not Players.LocalPlayer:GetAttribute("PulseAuthorized") then return end
             self.InstanceTracking:AttemptGarbageCollection()
         end)
     end
@@ -114,6 +116,7 @@ function Pulse.AddGarbageCollectionKeybinds(self: Pulse, ClientKey: Enum.KeyCode
             UserInputService.InputBegan:Connect(function(Input, Processed)
                 if Processed then return end
                 if Input.KeyCode ~= ServerKey then return end
+                if not Players.LocalPlayer:GetAttribute("PulseAuthorized") then return end
                 RequestGarbageCollectionEvent:FireServer()
             end)
         end)
