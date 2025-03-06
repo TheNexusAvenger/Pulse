@@ -1,8 +1,11 @@
 --Displays debug text on the client.
 --!strict
 
+local MAXIMUM_BACKGROUND_TRANSPARENCY = 0.75
+
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local GuiService = game:GetService("GuiService")
 
 local DebugTextEntry = require(script.Parent.Parent:WaitForChild("Common"):WaitForChild("DebugTextEntry"))
 
@@ -34,12 +37,14 @@ function DebugTextView.new(Parent: Instance?): DebugTextView
 
     local DebugTextLabel = Instance.new("TextLabel")
     DebugTextLabel.AnchorPoint = Vector2.new(0, 1)
-    DebugTextLabel.BackgroundTransparency = 1
-    DebugTextLabel.Size = UDim2.new(1, -8, 1, -8)
+    DebugTextLabel.BackgroundTransparency = MAXIMUM_BACKGROUND_TRANSPARENCY * GuiService.PreferredTransparency
+    DebugTextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    DebugTextLabel.AutomaticSize = Enum.AutomaticSize.XY
+    DebugTextLabel.Size = UDim2.new(0, 0, 0, 0)
     DebugTextLabel.Position = UDim2.new(0, 4, 1, -4)
     DebugTextLabel.Font = Enum.Font.SourceSans
     DebugTextLabel.Text = ""
-    DebugTextLabel.TextSize = 24
+    DebugTextLabel.TextSize = 18
     DebugTextLabel.RichText = true
     DebugTextLabel.TextWrapped = true
     DebugTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -54,7 +59,11 @@ function DebugTextView.new(Parent: Instance?): DebugTextView
         DebugScreenGui = DebugScreenGui,
         DebugTextLabel = DebugTextLabel,
         DebugTextEntries = {},
-        EventConnections = {},
+        EventConnections = {
+            GuiService:GetPropertyChangedSignal("PreferredTransparency"):Connect(function()
+                DebugTextLabel.BackgroundTransparency = MAXIMUM_BACKGROUND_TRANSPARENCY * GuiService.PreferredTransparency
+            end)
+        },
     }, DebugTextView) :: DebugTextView
 end
 
