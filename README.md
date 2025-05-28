@@ -182,7 +182,7 @@ with an admin level check, and creates commands to view totals for tags
 (instead of just the groups with the debug text).
 
 ```luau
-local NexusAdminIntegration = require(ReplicatedStorage:WaitForChild("Pulse"):WaitForChild("Admin"):WaitForChild("NexusAdmin"))
+local NexusAdminIntegration = require(ReplicatedStorage:WaitForChild("Pulse")).Admin.NexusAdmin
 
 --Enables admin level authorization for admin level >= 1 (SERVER ONLY).
 NexusAdminIntegration:EnableAdminLevelAuthorization(1)

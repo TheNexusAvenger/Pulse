@@ -5,6 +5,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
+local NexusAdmin = require(script:WaitForChild("Admin"):WaitForChild("NexusAdmin"))
 local DebugTextView = require(script:WaitForChild("Client"):WaitForChild("DebugTextView"))
 local DebugClientState = require(script:WaitForChild("Client"))
 local DebugTextEntry = require(script:WaitForChild("Common"):WaitForChild("DebugTextEntry"))
@@ -15,10 +16,17 @@ local Pulse = {
     DebugClientState = nil :: DebugClientState.DebugClientState?,
     DebugServerState = nil :: DebugServerState.DebugServerState?,
     InstanceTracking = InstanceTracking.new(),
+    Admin = {
+        NexusAdmin = NexusAdmin,
+    },
 }
 Pulse.__index = Pulse
 
 export type Pulse = typeof(Pulse)
+export type DebugTextView = DebugTextView.DebugTextView
+export type DebugTextEntry = DebugTextEntry.DebugTextEntry
+export type InstanceTracking = InstanceTracking.InstanceTracking
+export type NexusAdmin = NexusAdmin.NexusAdmin
 
 
 
@@ -132,6 +140,9 @@ end
 if RunService:IsServer() then
     Pulse.DebugServerState = DebugServerState.new()
 end
+
+--Set up the Pulse references.
+Pulse.Admin.NexusAdmin.Pulse = Pulse
 
 
 

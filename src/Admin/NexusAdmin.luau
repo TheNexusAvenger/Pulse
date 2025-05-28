@@ -5,10 +5,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local RunService = game:GetService("RunService")
 
-local Pulse = require(script.Parent.Parent)
 local InstanceTracking = require(script.Parent.Parent:WaitForChild("Common"):WaitForChild("InstanceTracking"))
 
 local NexusAdmin = {}
+NexusAdmin.Pulse = nil :: any --Not required due to cyclic dependency.
 
 export type NexusAdmin = typeof(NexusAdmin)
 
@@ -101,7 +101,7 @@ function NexusAdmin.EnableAdminLevelAuthorization(self: NexusAdmin, AdminLevel: 
     task.spawn(function()
         --Add the Nexus Admin authorization.
         local NexusAdminApi = self:GetNexusAdminApi()
-        Pulse:EnableAuthorization(function(Player)
+        self.Pulse:EnableAuthorization(function(Player)
             return NexusAdminApi.Authorization:YieldForAdminLevel(Player) >= (AdminLevel or 0)
         end)
     end)
@@ -131,7 +131,7 @@ function NexusAdmin.AddCommands(self: NexusAdmin, AdminLevel: number?): NexusAdm
                 local TextList = Window:AddTextList()
 
                 local function UpdateText()
-                    TextList:SetLines(self:FormatSummary(Pulse.InstanceTracking:GetSummary("ALL")))
+                    TextList:SetLines(self:FormatSummary(self.Pulse.InstanceTracking:GetSummary("ALL")))
                 end
 
                 task.spawn(UpdateText)
@@ -177,7 +177,7 @@ function NexusAdmin.AddCommands(self: NexusAdmin, AdminLevel: number?): NexusAdm
 
             GetInstanceTrackingSummaryFunction.OnServerInvoke = function(Player)
                 if not NexusAdminApi.Authorization:IsPlayerAuthorized(Player, AdminLevel or 0) then return {} end
-                return Pulse.InstanceTracking:GetSummary("ALL")
+                return self.Pulse.InstanceTracking:GetSummary("ALL")
             end
         end
     end)
